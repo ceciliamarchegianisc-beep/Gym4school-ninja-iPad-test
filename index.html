@@ -47,6 +47,27 @@
 @media (min-width:761px) and (max-width:1180px) and (orientation:landscape){
 .wrap{padding:8px 14px}.top{margin-bottom:6px}.topMissionControls{display:flex;gap:5px}.topMissionControls button{padding:7px 9px;font-size:12px}.activities{padding-bottom:6px;gap:7px}.card{padding:11px}.stage{min-height:310px}
 }
+/* iPad: mantiene la stessa impaginazione anche dopo Stop/uscita dal fullscreen */
+html.ipad .wrap{padding:4px 8px;max-width:100%;overflow:visible}
+html.ipad .top{margin-bottom:3px;gap:5px}
+html.ipad .brand{gap:6px;min-width:0}
+html.ipad .logo{width:36px;height:36px;font-size:20px;border-radius:11px}
+html.ipad h1{font-size:23px;letter-spacing:-.7px}
+html.ipad .sub{font-size:10px;white-space:nowrap}
+html.ipad .topActions{min-width:148px;width:148px;flex-shrink:0;gap:3px;display:flex}
+html.ipad #start,html.ipad #fullscreen{display:block!important;visibility:visible!important;opacity:1!important}
+html.ipad .topActions>#start{padding:6px 7px;font-size:11px;white-space:nowrap}
+html.ipad .topActions>#fullscreen{padding:5px 7px;font-size:10px;white-space:nowrap}
+html.ipad .topMissionControls{margin:3px 0;gap:3px}
+html.ipad .topMissionControls button{padding:5px 6px;font-size:10px}
+html.ipad .activities{padding:0 0 3px;gap:4px}
+html.ipad .activity{min-width:120px;padding:5px;border-radius:14px}
+html.ipad .activity .ico{font-size:19px}
+html.ipad .activity b{font-size:13px}
+html.ipad .activity small{font-size:10px}
+html.ipad .card{padding:7px;border-radius:14px}
+html.ipad .stage{min-height:245px;border-radius:18px}
+html.ipad .grid{margin-top:4px;gap:5px}
 </style>
 </head>
 <body><main class="wrap">
@@ -115,6 +136,7 @@
 <script>
 const $=id=>document.getElementById(id);
 const isIPad=/iPad|Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1;
+if(isIPad) document.documentElement.classList.add('ipad');
 function toggleFullscreen(){const el=document.documentElement;if(!document.fullscreenElement){(el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen)?.call(el)}else{(document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen)?.call(document)}}
 const ninja=$('ninja'),rocket=$('rocket'),fox=$('fox'),ship=$('ship'),fill=$('fill'),pct=$('pct'),soundfill=$('soundfill'),message=$('message'),status=$('status'),objective=$('objective'),instructions=$('instructions'),timer=$('timer'),result=$('result');
 let audioContext=null,analyser=null,data=null,freqData=null,source=null,stream=null,active=false,progress=0,raf=null,last=0,gameStart=0,elapsed=0,timerId=null;
