@@ -46,9 +46,6 @@
 @media (min-width:761px) and (max-width:1180px) and (orientation:landscape){
 .wrap{padding:8px 14px}.top{margin-bottom:6px}.topMissionControls{display:flex;gap:5px}.topMissionControls button{padding:7px 9px;font-size:12px}.activities{padding-bottom:6px;gap:7px}.card{padding:11px}.stage{min-height:310px}
 }
-.gnomeNote{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:16px;background:#fff7df;color:#6b5200;line-height:1.35;border:1px solid #f1d78a}
-.gnomeIcon{font-size:38px;line-height:1;filter:drop-shadow(0 2px 1px #0002);flex:0 0 auto}
-@media(max-width:760px){.gnomeNote{font-size:12px}.gnomeIcon{font-size:32px}}
 </style>
 </head>
 <body><main class="wrap">
@@ -103,15 +100,11 @@
 <section class="grid">
 <div class="card"><h2 style="margin-top:0">Come si gioca</h2>
 <div class="notice" id="instructions">🥷 Il gruppo è una squadra di ninja. Superate il percorso con passi controllati e silenziosi: equilibrio, slalom, cerchi e ostacoli. Quando arriva un rumore, il ninja si blocca!</div>
+<div class="notice" style="margin-top:10px;background:#fff7df;color:#6b5200;border:1px solid #f1d78a"><span style="font-size:30px;vertical-align:middle;margin-right:8px">🧙‍♂️</span><b>Attenzione allo Gnomo del Silenzio!</b><br>Ogni tanto si diverte a fare qualche piccolo scherzetto e può far fermare il Ninja anche quando non sembra esserci rumore. 🤫<br>Fa parte della missione: riuscirai a non farti ingannare?</div>
 <div class="controls"><button id="stop" class="secondary">Ferma</button><button id="reset" class="secondary">Ricomincia</button></div>
 <p id="status" class="notice" style="margin-top:12px">Tocca «Avvia microfono» e consenti l'accesso al microfono.</p>
 </div>
 <div class="card"><h2 style="margin-top:0">🔒 Privacy</h2>
-<div class="gnomeNote">
-  <div class="gnomeIcon" aria-hidden="true">🧙‍♂️</div>
-  <div><b>Attenzione allo Gnomo del Silenzio!</b><br>
-  Ogni tanto si diverte a fare qualche piccolo scherzetto e può far fermare il Ninja anche quando non sembra esserci rumore. 🤫<br>
-  Fa parte della missione: riuscirai a non farti ingannare?</div>
 </div>
 <div class="notice ok">Il microfono viene usato esclusivamente per rilevare il livello sonoro. L'audio non viene registrato, salvato o inviato dal gioco.</div>
 <p class="stat" style="margin-top:14px">Nessun riconoscimento vocale, nessuna identificazione e nessuna telecamera.</p>
