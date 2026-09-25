@@ -115,7 +115,7 @@ const isIPad=/iPad|Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoint
 function toggleFullscreen(){const el=document.documentElement;if(!document.fullscreenElement){(el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen)?.call(el)}else{(document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen)?.call(document)}}
 const ninja=$('ninja'),rocket=$('rocket'),fox=$('fox'),ship=$('ship'),fill=$('fill'),pct=$('pct'),soundfill=$('soundfill'),message=$('message'),status=$('status'),objective=$('objective'),instructions=$('instructions'),timer=$('timer'),result=$('result');
 let audioContext=null,analyser=null,data=null,freqData=null,source=null,stream=null,active=false,progress=0,raf=null,last=0,gameStart=0,elapsed=0,timerId=null;
-let baseline=0,baselinePeak=0,baselineFlux=0,calibrating=false,calibSamples=[],calibPeaks=[],calibFlux=[],calibLowSamples=[],calibStart=0,quietThreshold=0,currentMission=0;let prevSpectrum=null,noiseUntil=0,lastNoiseEvent=0,noiseActive=false,silentSince=0;let spaceInterval=600,spaceNextBeat=0,spaceLastBeat=0,spaceHits=0,spaceTarget=24,spaceLowBase=8,spaceLastHit=0,spaceBeatIndex=0;let pendingTime=null,pendingScore=null;let finishSoundPlayed=false;let ninjaDurationMs=120000,ninjaStart=0,ninjaDistance=0,ninjaStops=0,ninjaRunning=false;
+let baseline=0,baselinePeak=0,baselineFlux=0,calibrating=false,calibSamples=[],calibPeaks=[],calibFlux=[],calibLowSamples=[],calibStart=0,quietThreshold=0,currentMission=0;let prevSpectrum=null,noiseUntil=0,lastNoiseEvent=0,noiseActive=false,silentSince=0,lastSoundSeen=0;let spaceInterval=600,spaceNextBeat=0,spaceLastBeat=0,spaceHits=0,spaceTarget=24,spaceLowBase=8,spaceLastHit=0,spaceBeatIndex=0;let pendingTime=null,pendingScore=null;let finishSoundPlayed=false;let ninjaDurationMs=120000,ninjaStart=0,ninjaDistance=0,ninjaStops=0,ninjaRunning=false;
 
 const resultsList=$('resultsList');
 $('fullscreen').onclick=toggleFullscreen;
@@ -245,23 +245,27 @@ function measure(){
  const fluxThreshold=Math.max(18,baselineFlux*3.2+10);
  const peakThreshold=Math.max(7,baselinePeak*2.4);
  const rmsThreshold=Math.max(.010,noiseFloor*1.8);
- const releaseThreshold=Math.max(.007,noiseFloor*1.45);
+ const releaseThreshold=Math.max(.006,noiseFloor*1.18);
+ const voiceThreshold=Math.max(.0075,noiseFloor*1.20);
  const transient=isIPad && ((flux>=fluxThreshold && maxDev>=4) || (maxDev>=peakThreshold && rms>=rmsThreshold));
- const sustained=isIPad && rms>=rmsThreshold;
+ const sustained=isIPad && rms>=voiceThreshold;
  const detected=isIPad ? (transient || sustained) : (rms>quietThreshold||maxDev>=8);
  soundfill.style.width=Math.min(100,Math.max(flux*1.2,maxDev*4,rms*1800))+'%';
 
  if(isIPad){
    if(!noiseActive && detected && now-lastNoiseEvent>450){
-     noiseActive=true;lastNoiseEvent=now;noiseUntil=now+350;
-     if(currentMission===0&&ninjaRunning){ninjaStops++;$('ninjaStops').textContent=ninjaStops;}
+     noiseActive=true;lastNoiseEvent=now;lastSoundSeen=now;noiseUntil=now+350;
+     if(currentMission===0&&ninjaRunning){ninjaStops++;$('ninjaStops').textContent=''+ninjaStops;last=now;}
    }
    if(noiseActive){
-     if(rms<releaseThreshold && maxDev<Math.max(3,baselinePeak*1.35)){
-       if(!silentSince)silentSince=now;
-       if(now-silentSince>=220){noiseActive=false;silentSince=0;noiseUntil=now+120;}
+     if(rms>=releaseThreshold || maxDev>=Math.max(3,baselinePeak*1.25)){
+       lastSoundSeen=now;silentSince=0;noiseUntil=now+180;
      }else{
-       silentSince=0;noiseUntil=now+120;
+       if(!silentSince)silentSince=now;
+       // Keep the Ninja stopped through short gaps inside continuous speech.
+       if(now-silentSince>=650 && now-lastSoundSeen>=650){
+         noiseActive=false;silentSince=0;noiseUntil=now+100;
+       }
      }
    }
  }
@@ -281,7 +285,7 @@ $('start').onclick=async()=>{
   stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:1},video:false});
   audioContext=new(window.AudioContext||window.webkitAudioContext)();await audioContext.resume();source=audioContext.createMediaStreamSource(stream);
   analyser=audioContext.createAnalyser();analyser.fftSize=512;analyser.smoothingTimeConstant=.05;data=new Uint8Array(analyser.fftSize);freqData=new Uint8Array(analyser.frequencyBinCount);source.connect(analyser);
-  active=true;finishSoundPlayed=false;calibrating=true;calibSamples=[];calibPeaks=[];calibFlux=[];calibLowSamples=[];prevSpectrum=null;noiseUntil=0;lastNoiseEvent=0;noiseActive=false;silentSince=0;calibStart=performance.now();gameStart=performance.now();elapsed=0;if(currentMission===0){ninjaDurationMs=Number($('ninjaDuration').value)*60000;ninjaStart=performance.now();ninjaDistance=0;ninjaStops=0;ninjaRunning=true;$('ninjaStops').textContent='0';}if(currentMission===1){spaceHits=0;spaceBeatIndex=0;spaceLastHit=0;$('spaceHits').textContent='0';$('spaceBeat').textContent='PREPARA...';}timer.textContent='⏱️ 00:00.0';result.className='result';result.textContent='';tickTimer();status.className='notice';status.textContent='Resta in silenzio per 3 secondi: sto calibrando.';measure();
+  active=true;finishSoundPlayed=false;calibrating=true;calibSamples=[];calibPeaks=[];calibFlux=[];calibLowSamples=[];prevSpectrum=null;noiseUntil=0;lastNoiseEvent=0;noiseActive=false;silentSince=0;lastSoundSeen=0;calibStart=performance.now();gameStart=performance.now();elapsed=0;if(currentMission===0){ninjaDurationMs=Number($('ninjaDuration').value)*60000;ninjaStart=performance.now();ninjaDistance=0;ninjaStops=0;ninjaRunning=true;$('ninjaStops').textContent='0';}if(currentMission===1){spaceHits=0;spaceBeatIndex=0;spaceLastHit=0;$('spaceHits').textContent='0';$('spaceBeat').textContent='PREPARA...';}timer.textContent='⏱️ 00:00.0';result.className='result';result.textContent='';tickTimer();status.className='notice';status.textContent='Resta in silenzio per 3 secondi: sto calibrando.';measure();
  }catch(e){status.className='notice warn';status.textContent='Non è stato possibile usare il microfono. Controlla il permesso del browser e riprova.'}
 };
 $('stop').onclick=()=>{active=false;if(raf)cancelAnimationFrame(raf);if(timerId)cancelAnimationFrame(timerId);if(source)source.disconnect();if(audioContext)audioContext.close();if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;source=null;audioContext=null;analyser=null;freqData=null;status.className='notice';status.textContent='Fermato. Puoi riavviare il microfono.'};
