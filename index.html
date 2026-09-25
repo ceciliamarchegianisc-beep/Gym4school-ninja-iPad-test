@@ -26,21 +26,22 @@
 }
 /* iPad fullscreen: keep the game layout compact and keep AVVIA visible */
 @media (min-width:761px) and (max-width:1180px){
-  .wrap,:fullscreen .wrap,.fullscreen .wrap{padding:6px 10px;max-width:1100px}
-  .top,:fullscreen .top,.fullscreen .top{margin-bottom:4px;gap:6px}
-  .brand{gap:8px}.logo{width:40px;height:40px;font-size:22px}
-  h1{font-size:27px}.sub{font-size:11px}
-  .topActions,:fullscreen .topActions,.fullscreen .topActions{min-width:172px;flex-shrink:0;gap:4px}
-  .topActions>#start,:fullscreen .topActions>#start,.fullscreen .topActions>#start{padding:7px 9px;font-size:13px}
-  .topActions>#fullscreen,:fullscreen .topActions>#fullscreen,.fullscreen .topActions>#fullscreen{padding:6px 9px;font-size:11px}
-  .topMissionControls{margin:4px 0 5px;gap:4px}
-  .topMissionControls button{padding:6px 8px;font-size:11px}
-  .activities,:fullscreen .activities,.fullscreen .activities{padding:0 0 4px;gap:5px}
-  .activity,:fullscreen .activity,.fullscreen .activity{min-width:130px;padding:6px}
-  .activity .ico,:fullscreen .activity .ico,.fullscreen .activity .ico{font-size:21px}
-  .card,:fullscreen .card,.fullscreen .card{padding:8px;border-radius:16px}
-  .stage,:fullscreen .stage,.fullscreen .stage{min-height:285px}
-  .grid,:fullscreen .grid,.fullscreen .grid{margin-top:5px;gap:6px}
+  .wrap,:fullscreen .wrap,.fullscreen .wrap{padding:4px 8px;max-width:100%;overflow:visible}
+  .top,:fullscreen .top,.fullscreen .top{margin-bottom:3px;gap:5px}
+  .brand{gap:6px;min-width:0}.logo{width:36px;height:36px;font-size:20px;border-radius:11px}
+  h1{font-size:23px;letter-spacing:-.7px}.sub{font-size:10px;white-space:nowrap}
+  .topActions,:fullscreen .topActions,.fullscreen .topActions{min-width:148px;width:148px;flex-shrink:0;gap:3px}
+  .topActions>#start,:fullscreen .topActions>#start,.fullscreen .topActions>#start{padding:6px 7px;font-size:11px;white-space:nowrap}
+  .topActions>#fullscreen,:fullscreen .topActions>#fullscreen,.fullscreen .topActions>#fullscreen{padding:5px 7px;font-size:10px;white-space:nowrap}
+  .topMissionControls{margin:3px 0 3px;gap:3px}
+  .topMissionControls button{padding:5px 6px;font-size:10px}
+  .activities,:fullscreen .activities,.fullscreen .activities{padding:0 0 3px;gap:4px}
+  .activity,:fullscreen .activity,.fullscreen .activity{min-width:120px;padding:5px;border-radius:14px}
+  .activity .ico,:fullscreen .activity .ico,.fullscreen .activity .ico{font-size:19px}
+  .activity b{font-size:13px}.activity small{font-size:10px}
+  .card,:fullscreen .card,.fullscreen .card{padding:7px;border-radius:14px}
+  .stage,:fullscreen .stage,.fullscreen .stage{min-height:245px;border-radius:18px}
+  .grid,:fullscreen .grid,.fullscreen .grid{margin-top:4px;gap:5px}
 }
 
 @media (min-width:761px) and (max-width:1180px) and (orientation:landscape){
