@@ -45,7 +45,11 @@
 
 @media (min-width:761px) and (max-width:1180px) and (orientation:landscape){
 .wrap{padding:8px 14px}.top{margin-bottom:6px}.topMissionControls{display:flex;gap:5px}.topMissionControls button{padding:7px 9px;font-size:12px}.activities{padding-bottom:6px;gap:7px}.card{padding:11px}.stage{min-height:310px}
-}</style>
+}
+.gnomeNote{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:16px;background:#fff7df;color:#6b5200;line-height:1.35;border:1px solid #f1d78a}
+.gnomeIcon{font-size:38px;line-height:1;filter:drop-shadow(0 2px 1px #0002);flex:0 0 auto}
+@media(max-width:760px){.gnomeNote{font-size:12px}.gnomeIcon{font-size:32px}}
+</style>
 </head>
 <body><main class="wrap">
 <div class="top"><div class="brand"><div class="logo">🎮</div><div><h1>MOVE MISSION</h1><div class="sub">Giochi di movimento controllati dal silenzio.</div></div></div><div class="topActions"><button id="start">🎙️ Avvia microfono</button><button id="fullscreen" class="secondary" type="button">⛶ Schermo intero</button><div class="topMissionControls" id="topMissionControls"><button id="stopTop" type="button">⏹️ Ferma</button><button id="resetTop" type="button">🔄 Ricomincia</button></div></div></div>
@@ -103,8 +107,13 @@
 <p id="status" class="notice" style="margin-top:12px">Tocca «Avvia microfono» e consenti l'accesso al microfono.</p>
 </div>
 <div class="card"><h2 style="margin-top:0">🔒 Privacy</h2>
+<div class="gnomeNote">
+  <div class="gnomeIcon" aria-hidden="true">🧙‍♂️</div>
+  <div><b>Attenzione allo Gnomo del Silenzio!</b><br>
+  Ogni tanto si diverte a fare qualche piccolo scherzetto e può far fermare il Ninja anche quando non sembra esserci rumore. 🤫<br>
+  Fa parte della missione: riuscirai a non farti ingannare?</div>
+</div>
 <div class="notice ok">Il microfono viene usato esclusivamente per rilevare il livello sonoro. L'audio non viene registrato, salvato o inviato dal gioco.</div>
-<p class="stat" style="margin-top:10px">💡 Il rilevamento del suono può fare ogni tanto qualche piccolo “scherzetto”: rumori dell’ambiente, distanza dal tablet e caratteristiche del microfono possono influire sulla risposta. Per risultati più regolari, usa il gioco in un ambiente il più possibile tranquillo e con il tablet vicino alla zona di gioco.</p>
 <p class="stat" style="margin-top:14px">Nessun riconoscimento vocale, nessuna identificazione e nessuna telecamera.</p>
 </div>
 </section>
