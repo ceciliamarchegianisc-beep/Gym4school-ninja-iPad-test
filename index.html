@@ -97,7 +97,7 @@ html.ipad .grid{margin-top:4px;gap:5px}
 <div class="scene spaceScene hidden" id="scene1">
  <div class="planet">🪐</div><div class="orbit"></div><svg class="routeSvg" viewBox="0 0 1000 440" preserveAspectRatio="none"><path class="routeEdge" d="M110 390 C220 330 170 220 330 250 S510 350 590 235 S700 95 900 95"/></svg>
  <div class="stars ss1">✦</div><div class="stars ss2">✦</div><div class="stars ss3">✦</div><div class="stars ss4">✦</div>
- <div class="spaceControls"><b>🎵 GRAVITÀ ZERO</b><label style="display:block;margin-top:5px;font-weight:800">Beat<select id="spaceBeatRate"><option value="1">1 / secondo</option><option value="2" selected>2 / secondo</option><option value="3">3 / secondo</option><option value="4">4 / secondo</option></select></label><div class="spaceBeat" id="spaceBeat">PREPARA...</div><div class="spaceHits">🏀 Colpi a tempo: <b id="spaceHits">0</b>/24</div></div>
+ <div class="spaceControls"><b>🎵 GRAVITÀ ZERO</b><div class="spaceBeat" id="spaceBeat">PREPARA...</div><div class="spaceHits">🏀 Colpi a tempo: <b id="spaceHits">0</b>/24</div></div>
  <div class="rocket" id="rocket">🚀</div>
 </div>
 
@@ -144,7 +144,6 @@ let baseline=0,baselinePeak=0,baselineFlux=0,baselineMid=0,calibrating=false,cal
 
 const resultsList=$('resultsList');
 $('fullscreen').onclick=toggleFullscreen;
-$('spaceBeatRate').onchange=()=>{spaceInterval=1000/Number($('spaceBeatRate').value);if(active&&currentMission===1){spaceNextBeat=performance.now()+spaceInterval;spaceLastBeat=spaceNextBeat-spaceInterval;$('spaceBeat').textContent='🎵 CAMBIO BEAT';}};
 function resultMs(r){if(Number.isFinite(r.ms))return r.ms;const m=String(r.time||'').match(/^(?:(\d+):)?(\d+)(?:\.(\d))?$/);if(!m)return 999999999;return ((Number(m[1]||0)*60)+Number(m[2]))*1000+Number(m[3]||0)*100}function loadResults(){let a=[];try{a=JSON.parse(localStorage.getItem('shhhResults')||'[]')}catch(e){};a.forEach(r=>{r.ms=resultMs(r);if(r.mission==null)r.mission=0});a=a.filter(r=>r.mission===currentMission);a.sort((x,y)=>x.ms-y.ms);resultsList.innerHTML=a.length?a.slice(0,10).map((r,i)=>'<div class="resultRow"><span class="resultTeam"><b>'+(i===0?'🥇 1°':i===1?'🥈 2°':i===2?'🥉 3°':(i+1)+'°')+'</b> '+r.team+'</span><span>⏱️ '+r.time+'</span><button class="deleteResult" title="Cancella risultato" aria-label="Cancella risultato" onclick="deleteResult('+i+')">🗑️</button></div>').join(''):'<div class="stat">Nessun risultato ancora per questa missione.</div>';document.querySelector('.resultsBox h3').textContent='🏆 Classifica — '+['NINJA','SPACE','FOREST','PIRATES'][currentMission]+' (10 risultati)'}
 function deleteResult(i){let all=[];try{all=JSON.parse(localStorage.getItem('shhhResults')||'[]')}catch(e){};all.forEach(r=>{if(r.mission==null)r.mission=0});const idx=all.map((r,n)=>({r,n})).filter(x=>x.r.mission===currentMission).sort((x,y)=>resultMs(x.r)-resultMs(y.r))[i]?.n;if(idx==null)return;if(confirm('Cancellare questo risultato?')){all.splice(idx,1);try{localStorage.setItem('shhhResults',JSON.stringify(all))}catch(e){};loadResults()}}
 function saveResult(){if(pendingTime==null)return;const team=(prompt('Nome della classe:')||'Classe').trim()||'Classe';let a=[];try{a=JSON.parse(localStorage.getItem('shhhResults')||'[]')}catch(e){};a.forEach(r=>{if(r.mission==null)r.mission=0});a.push({team,time:formatTime(pendingTime).replace('⏱️ ',''),ms:pendingTime,mission:currentMission,score:pendingScore??null});const same=a.filter(r=>r.mission===currentMission).sort((x,y)=>resultMs(x)-resultMs(y)).slice(0,10);const other=a.filter(r=>r.mission!==currentMission);try{localStorage.setItem('shhhResults',JSON.stringify(other.concat(same)))}catch(e){};pendingTime=null;pendingScore=null;loadResults()}
@@ -197,7 +196,7 @@ function setMission(i){
  document.querySelectorAll('.scene').forEach((x,n)=>x.classList.toggle('hidden',n!==i));
  const d=missionData[i];
  objective.textContent=d.objective;instructions.textContent=d.desc;
- progress=0;elapsed=0;finishSoundPlayed=false;ninjaStops=0;ninjaDistance=0;ninjaRunning=false;spaceHits=0;spaceBeatIndex=0;spaceLastHit=0;if(i===1)spaceInterval=1000/Number($('spaceBeatRate').value);timer.textContent='⏱️ 00:00.0';result.className='result';result.textContent='';$('ninjaStops').textContent='0';$('spaceHits').textContent='0';$('spaceBeat').textContent='PREPARA...';render();message.textContent=d.title;loadResults();
+ progress=0;elapsed=0;finishSoundPlayed=false;ninjaStops=0;ninjaDistance=0;ninjaRunning=false;spaceHits=0;spaceBeatIndex=0;spaceLastHit=0;timer.textContent='⏱️ 00:00.0';result.className='result';result.textContent='';$('ninjaStops').textContent='0';$('spaceHits').textContent='0';$('spaceBeat').textContent='PREPARA...';render();message.textContent=d.title;loadResults();
  status.className='notice';status.textContent=active?'Missione cambiata! Il microfono continua a funzionare.':'Tocca «Avvia microfono» per iniziare.';
 }
 function measure(){
@@ -235,7 +234,7 @@ function measure(){
      if(currentMission===1){
        calibLowSamples.sort((a,b)=>a-b);
        spaceLowBase=calibLowSamples[Math.floor(calibLowSamples.length*.7)]||8;
-       spaceInterval=1000/Number($('spaceBeatRate').value);
+       spaceInterval=600;
        spaceNextBeat=now+900;
        spaceLastBeat=spaceNextBeat-spaceInterval;
        spaceHits=0;spaceBeatIndex=0;spaceLastHit=0;
