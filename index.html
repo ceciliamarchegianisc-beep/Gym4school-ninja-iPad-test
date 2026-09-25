@@ -299,7 +299,7 @@ function measure(){
  }
  raf=requestAnimationFrame(measure);
 }
-$('stopTop').onclick=()=>{$('stop').click()};$('resetTop').onclick=()=>{$('reset').click()};$('reset').onclick=()=>{progress=0;elapsed=0;$('timer').classList.remove('running');$('timerValue').textContent='⏱️ 00:00.0';result.className='result';result.textContent='';render();message.textContent=missionData[currentMission].title;status.className='notice';status.textContent='Tocca «Avvia microfono» per iniziare.';soundfill.style.width='0%';if(active){gameStart=performance.now();tickTimer()}};
+$('stopTop').onclick=()=>{$('stop').click()};$('resetTop').onclick=()=>{$('reset').click()};$('reset').onclick=()=>{progress=0;elapsed=0;$('timer').classList.remove('running');$('timerValue').textContent='⏱️ 00:00.0';result.className='result';result.textContent='';render();message.textContent=missionData[currentMission].title;status.className='notice';status.textContent='Tocca «Avvia microfono» per iniziare.';soundfill.style.width='0%';$('start').style.display='block';$('fullscreen').style.display='block';document.documentElement.classList.add('ipad');window.scrollTo({top:0,behavior:'instant'});if(active){gameStart=performance.now();tickTimer()}};
 $('start').onclick=async()=>{
  if(active)return;
  try{
