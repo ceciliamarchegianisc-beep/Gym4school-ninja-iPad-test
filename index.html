@@ -248,6 +248,7 @@ function measure(){
    raf=requestAnimationFrame(measure);return;
  }
  if(currentMission===1){
+   if(spaceStart && now-spaceStart>=spaceDurationMs){finishSpace();return;}
    while(now>=spaceNextBeat){
      spaceLastBeat=spaceNextBeat;
      spaceNextBeat+=spaceInterval;
