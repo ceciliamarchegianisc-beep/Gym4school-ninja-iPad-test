@@ -303,14 +303,14 @@ function measure(){
    raf=requestAnimationFrame(measure);return;
  }
  const noiseFloor=Math.max(.002,baseline);
- const fluxThreshold=Math.max(11,baselineFlux*2.0+5);
- const peakThreshold=Math.max(3.5,baselinePeak*1.45);
- const rmsThreshold=Math.max(.006,noiseFloor*1.22);
- const releaseThreshold=Math.max(.0045,noiseFloor*1.08);
- const voiceThreshold=Math.max(1.25,baselineMid*1.16);
- const transient=isIPad && ((flux>=fluxThreshold && maxDev>=3.5) || (maxDev>=peakThreshold && rms>=Math.max(.006,noiseFloor*1.15)));
+ const fluxThreshold=Math.max(7,baselineFlux*1.7+3);
+ const peakThreshold=Math.max(2.2,baselinePeak*1.25);
+ const rmsThreshold=Math.max(.0038,noiseFloor*1.08);
+ const releaseThreshold=Math.max(.003,noiseFloor*1.04);
+ const voiceThreshold=Math.max(.8,baselineMid*1.04);
+ const transient=isIPad && (flux>=fluxThreshold || maxDev>=peakThreshold);
  const sustainedVoice=isIPad && rms>=rmsThreshold && midEnergy>=voiceThreshold;
- const sustained=isIPad && rms>=rmsThreshold && maxDev>=3.5;
+ const sustained=isIPad && rms>=rmsThreshold;
  const detected=isIPad ? (transient || sustainedVoice || sustained) : (rms>quietThreshold||maxDev>=8);
  soundfill.style.width=Math.min(100,Math.max(flux*1.2,maxDev*4,rms*1800))+'%';
 
