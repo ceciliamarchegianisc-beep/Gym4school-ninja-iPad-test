@@ -71,6 +71,21 @@ html.ipad .grid{margin-top:4px;gap:5px}
 html.ipad .topActions{position:relative;z-index:100}
 html.ipad .stage{min-height:245px;height:245px}
 html.ipad .spaceControls{left:2%;top:2%;bottom:auto;z-index:20;max-width:185px}
+
+/* iPad: blocca il ricalcolo della pagina dopo Stop, fullscreen e rotazione */
+html.ipad,html.ipad body{width:100%;min-width:100%;overflow-x:hidden}
+html.ipad body{overscroll-behavior:none;-webkit-text-size-adjust:100%}
+html.ipad .wrap{width:100%;margin:0 auto}
+html.ipad .top{width:100%;position:relative}
+html.ipad .topActions{position:relative;z-index:100;flex:0 0 148px}
+html.ipad .stage{width:100%;height:245px;min-height:245px;max-height:245px;contain:layout paint}
+html.ipad .scene{width:100%;height:100%}
+html.ipad .topActions>#start,html.ipad .topActions>#fullscreen,html.ipad .topMissionControls{flex-shrink:0}
+
+@media (orientation:landscape) and (min-width:761px) and (max-width:1180px){
+  html.ipad .wrap{padding-left:8px;padding-right:8px}
+  html.ipad .stage{height:245px;min-height:245px;max-height:245px}
+}
 </style>
 </head>
 <body><main class="wrap">
@@ -146,6 +161,18 @@ let audioContext=null,analyser=null,data=null,freqData=null,source=null,stream=n
 let baseline=0,baselinePeak=0,baselineFlux=0,baselineMid=0,calibrating=false,calibSamples=[],calibPeaks=[],calibFlux=[],calibMidSamples=[],calibLowSamples=[],calibStart=0,quietThreshold=0,currentMission=0;let prevSpectrum=null,noiseUntil=0,lastNoiseEvent=0,noiseActive=false,silentSince=0;let spaceInterval=1000,spaceNextBeat=0,spaceActivity=1,spaceLastBeat=0,spaceHits=0,spaceTarget=24,spaceLowBase=8,spaceLastHit=0,spaceBeatIndex=0,spaceDurationMs=120000,spaceStart=0;let pendingTime=null,pendingScore=null;let finishSoundPlayed=false;let ninjaDurationMs=120000,ninjaStart=0,ninjaDistance=0,ninjaStops=0,ninjaRunning=false;
 
 const resultsList=$('resultsList');
+function keepIPadLayout(){
+  if(!isIPad)return;
+  document.documentElement.classList.add('ipad');
+  const stage=document.querySelector('.stage');
+  if(stage){stage.style.height='245px';stage.style.minHeight='245px';stage.style.maxHeight='245px';}
+  window.scrollTo(0,0);
+}
+window.addEventListener('resize',()=>setTimeout(keepIPadLayout,50));
+window.addEventListener('orientationchange',()=>setTimeout(keepIPadLayout,120));
+window.addEventListener('pageshow',()=>setTimeout(keepIPadLayout,80));
+document.addEventListener('fullscreenchange',()=>setTimeout(keepIPadLayout,80));
+document.addEventListener('webkitfullscreenchange',()=>setTimeout(keepIPadLayout,80));
 $('fullscreen').onclick=toggleFullscreen;
 function resultMs(r){if(Number.isFinite(r.ms))return r.ms;const m=String(r.time||'').match(/^(?:(\d+):)?(\d+)(?:\.(\d))?$/);if(!m)return 999999999;return ((Number(m[1]||0)*60)+Number(m[2]))*1000+Number(m[3]||0)*100}function loadResults(){let a=[];try{a=JSON.parse(localStorage.getItem('shhhResults')||'[]')}catch(e){};a.forEach(r=>{r.ms=resultMs(r);if(r.mission==null)r.mission=0});a=a.filter(r=>r.mission===currentMission);a.sort((x,y)=>x.ms-y.ms);resultsList.innerHTML=a.length?a.slice(0,10).map((r,i)=>'<div class="resultRow"><span class="resultTeam"><b>'+(i===0?'🥇 1°':i===1?'🥈 2°':i===2?'🥉 3°':(i+1)+'°')+'</b> '+r.team+'</span><span>⏱️ '+r.time+'</span><button class="deleteResult" title="Cancella risultato" aria-label="Cancella risultato" onclick="deleteResult('+i+')">🗑️</button></div>').join(''):'<div class="stat">Nessun risultato ancora per questa missione.</div>';document.querySelector('.resultsBox h3').textContent='🏆 Classifica — '+['NINJA','SPACE','FOREST','PIRATES'][currentMission]+' (10 risultati)'}
 function deleteResult(i){let all=[];try{all=JSON.parse(localStorage.getItem('shhhResults')||'[]')}catch(e){};all.forEach(r=>{if(r.mission==null)r.mission=0});const idx=all.map((r,n)=>({r,n})).filter(x=>x.r.mission===currentMission).sort((x,y)=>resultMs(x.r)-resultMs(y.r))[i]?.n;if(idx==null)return;if(confirm('Cancellare questo risultato?')){all.splice(idx,1);try{localStorage.setItem('shhhResults',JSON.stringify(all))}catch(e){};loadResults()}}
