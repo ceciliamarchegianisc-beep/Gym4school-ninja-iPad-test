@@ -302,16 +302,14 @@ function measure(){
    }else if(!impact){message.textContent='🎵 Segui il ritmo...'}
    raf=requestAnimationFrame(measure);return;
  }
- const noiseFloor=Math.max(.0025,baseline);
- const fluxThreshold=Math.max(12,baselineFlux*2.4+6);
- const peakThreshold=Math.max(4,baselinePeak*1.55);
- const rmsThreshold=Math.max(.0055,noiseFloor*1.18);
- const releaseThreshold=Math.max(.004,noiseFloor*1.08);
- const voiceThreshold=Math.max(1.5,baselineMid*1.08);
- const transient=isIPad && ((flux>=fluxThreshold && maxDev>=3) || (maxDev>=peakThreshold && rms>=Math.max(.0055,noiseFloor*1.12)));
- const sustainedVoice=isIPad && rms>=rmsThreshold && midEnergy>=voiceThreshold;
- const sustained=isIPad && rms>=rmsThreshold && maxDev>=3;
- const detected=isIPad ? (transient || sustainedVoice || sustained) : (rms>quietThreshold||maxDev>=8);
+ const noiseFloor=Math.max(.003,baseline);
+ const fluxThreshold=Math.max(18,baselineFlux*3.2+10);
+ const peakThreshold=Math.max(7,baselinePeak*2.4);
+ const rmsThreshold=Math.max(.012,noiseFloor*2.15);
+ const releaseThreshold=Math.max(.007,noiseFloor*1.45);
+ const transient=isIPad && ((flux>=fluxThreshold && maxDev>=5) || (maxDev>=peakThreshold && rms>=rmsThreshold));
+ const sustained=isIPad && rms>=rmsThreshold;
+ const detected=isIPad ? (transient || sustained) : (rms>quietThreshold||maxDev>=8);
  soundfill.style.width=Math.min(100,Math.max(flux*1.2,maxDev*4,rms*1800))+'%';
 
  if(isIPad){
