@@ -233,9 +233,9 @@ function measure(){
  if(!active)return;
  analyser.getByteTimeDomainData(data);
  const now=performance.now();
+ analyser.getByteFrequencyData(freqData);
  const lowEnergy=spaceLowEnergy();
  const midEnergy=speechBandEnergy();
- analyser.getByteFrequencyData(freqData);
  let flux=0;
  if(prevSpectrum){for(let i=3;i<Math.min(freqData.length,90);i++){const d=freqData[i]-prevSpectrum[i];if(d>0)flux+=d;}}
  prevSpectrum=freqData.slice();
@@ -303,13 +303,14 @@ function measure(){
    raf=requestAnimationFrame(measure);return;
  }
  const noiseFloor=Math.max(.003,baseline);
- const fluxThreshold=Math.max(18,baselineFlux*3.2+10);
- const peakThreshold=Math.max(7,baselinePeak*2.4);
- const rmsThreshold=Math.max(.012,noiseFloor*2.15);
- const releaseThreshold=Math.max(.007,noiseFloor*1.45);
- const transient=isIPad && ((flux>=fluxThreshold && maxDev>=5) || (maxDev>=peakThreshold && rms>=rmsThreshold));
- const sustained=isIPad && rms>=rmsThreshold;
- const detected=isIPad ? (transient || sustained) : (rms>quietThreshold||maxDev>=8);
+ const fluxThreshold=Math.max(10,baselineFlux*1.8+4);
+ const peakThreshold=Math.max(4,baselinePeak*1.5);
+ const rmsThreshold=Math.max(.009,noiseFloor*1.45);
+ const releaseThreshold=Math.max(.006,noiseFloor*1.25);
+ const transient=isIPad && ((flux>=fluxThreshold && maxDev>=4) || (maxDev>=peakThreshold && rms>=rmsThreshold));
+ const speech=isIPad && midEnergy>=Math.max(4,baselineMid*1.12) && rms>=Math.max(.009,noiseFloor*1.3);
+ const sustained=isIPad && rms>=rmsThreshold && maxDev>=3;
+ const detected=isIPad ? (transient || speech || sustained) : (rms>quietThreshold||maxDev>=8);
  soundfill.style.width=Math.min(100,Math.max(flux*1.2,maxDev*4,rms*1800))+'%';
 
  if(isIPad){
