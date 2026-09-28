@@ -297,8 +297,12 @@ function measure(){
      $('spaceBeat').textContent='🎵 BUM';
      setTimeout(()=>{if(active&&currentMission===1)$('spaceBeat').textContent=$('spaceActivity').selectedOptions[0].textContent.replace(/^\d+ bip\/sec — /,'')},80);
    }
-   const impactThreshold=Math.max(spaceLowBase+5,spaceLowBase*1.22);
-   const impact=(lowEnergy>impactThreshold && maxDev>=5) || (maxDev>=8 && flux>=Math.max(10,baselineFlux*1.8+4));
+   const impactThreshold=spaceActivity===2
+     ? Math.max(spaceLowBase+2,spaceLowBase*1.08)
+     : Math.max(spaceLowBase+5,spaceLowBase*1.22);
+   const impact=spaceActivity===2
+     ? ((lowEnergy>impactThreshold && maxDev>=3) || (floatRms>=Math.max(floatBaseline*1.7,0.006) && maxDev>=2.5))
+     : ((lowEnergy>impactThreshold && maxDev>=5) || (maxDev>=8 && flux>=Math.max(10,baselineFlux*1.8+4)));
    soundfill.style.width=Math.min(100,Math.max(maxDev*4,(lowEnergy-spaceLowBase)*3))+'%';
    soundfill.style.background=impact?'#59a66d':'#6f9bd4';
    if(impact&&now-spaceLastHit>230){
