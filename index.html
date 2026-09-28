@@ -340,7 +340,7 @@ $('stopTop').onclick=()=>{$('stop').click()};$('resetTop').onclick=()=>{$('reset
 $('start').onclick=async()=>{
  if(active)return;
  try{
-  stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:1},video:false});
+  stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
   audioContext=new(window.AudioContext||window.webkitAudioContext)();await audioContext.resume();source=audioContext.createMediaStreamSource(stream);
   analyser=audioContext.createAnalyser();analyser.fftSize=512;analyser.smoothingTimeConstant=.05;data=new Uint8Array(analyser.fftSize);freqData=new Uint8Array(analyser.frequencyBinCount);source.connect(analyser);
   active=true;finishSoundPlayed=false;calibrating=true;calibSamples=[];calibPeaks=[];calibFlux=[];calibMidSamples=[];calibLowSamples=[];prevSpectrum=null;noiseUntil=0;lastNoiseEvent=0;noiseActive=false;silentSince=0;calibStart=performance.now();gameStart=performance.now();elapsed=0;if(currentMission===0){ninjaDurationMs=Number($('ninjaDuration').value)*60000;ninjaStart=performance.now();ninjaDistance=0;ninjaStops=0;ninjaRunning=true;$('ninjaStops').textContent='0';}if(currentMission===1){spaceDurationMs=Number($('spaceDuration').value)*60000;spaceActivity=Number($('spaceActivity').value);spaceInterval=1000/spaceActivity;spaceStart=performance.now();spaceHits=0;spaceBeatIndex=0;spaceLastHit=0;$('spaceHits').textContent='0';$('spaceBeat').textContent='PREPARA...';}timer.textContent='⏱️ 00:00.0';result.className='result';result.textContent='';tickTimer();status.className='notice';status.textContent='Resta in silenzio per 3 secondi: sto calibrando.';measure();
