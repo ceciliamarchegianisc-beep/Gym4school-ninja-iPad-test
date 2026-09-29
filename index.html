@@ -78,7 +78,7 @@ function openEvent(kind){
  eventActive=true;eventDone=false;eventKind=kind;eventStart=performance.now();eventDuration=kind==='silence'?5200:4200;$('event').classList.add('show');$('meterFill').style.width='0%';
  if(kind==='silence'){$('eventIcon').textContent='🤫';$('eventTitle').textContent='MISSIONE SILENZIO';$('eventText').textContent='Fermati e resta in silenzio!';}
  else if(kind==='noise'){$('eventIcon').textContent='📣';$('eventTitle').textContent='FATTI SENTIRE!';$('eventText').textContent='Batti le mani o fai un suono forte!';}
- else {$('eventIcon').textContent='🚀';$('eventTitle').textContent='ATTIVA IL BOOST!';$('eventText').textContent='Un grande applauso per caricare il turbo!');}
+ else {$('eventIcon').textContent='🚀';$('eventTitle').textContent='ATTIVA IL BOOST!';$('eventText').textContent='Un grande applauso per caricare il turbo!';}
  stopCharacter();
 }
 function finishEvent(success){
